@@ -1,0 +1,98 @@
+Que: Implement a heap class, with 
+	add() -> log(n)
+	remove() -> log(n)
+	peek() -> O(1)
+
+Soln:
+We use the ArrayList and this will maintain
+				          i) HOP - Heap order priority
+					 ii) Complete tree
+
+				
+				1
+			      /   \
+			    2       3
+			  /   \    /  \
+			4      5   .   .     Complete binary tree (fill element from left to right)
+
+left child - 2*parent_idx+1
+right child - 2*parent_idx+2
+
+parent_idx = (left_child-1)/2  //from left child to parent
+parent_idx = (right_child-2)/2 // from right child to parent
+ 
+add() -> add at the last of the arraylist and then apply heapify
+		add()-> O(1) then upheapify O(logn)(height of the tree)
+
+remove() -> swap the top element from the last one then downheapify function
+		remove() -> O(1) then downheapify O(logn)(height of the tree)
+
+peek() - > top element O(1)
+
+upheapify() - > we check if the current element is less than the parent or not.If it is then we swap it with the parent.
+		O(log n)
+
+downheapify()->  we are at top then we will swap the element from the min(parent_idx,left_idx,right_idx)
+			O(log n)
+
+
+class PriorityQueue{
+	ArrayList<Integer> data;
+	
+	PriorityQueue(){
+		data = new ArrayList<>();
+	}
+
+	public void add(int val){
+		data.add(val);
+		upheapify(data.size()-1);
+	}
+
+	public void upheapify(int idx){
+		if(idx==0){
+			return;
+		}
+		int parent_idx = (idx-1)/2;
+		if(data.get(idx)<data.get(parent_idx)){
+			swap(data,parent_idx,idx);
+			upheapify(parent_idx);
+		}
+	}
+
+	public static void swap(ArrayList<Integer> data, int i, int j){
+			int ith= data.get(i);
+			int jth = data.get(j);
+			data.set(i,j);
+			data.set(j,i);
+	}
+
+	public static int remove(){
+		if(data.size()==0){
+			Sout("Underflow");
+			return -1;
+		}
+
+		swap(data,0,data.size()-1);
+		int val = data.remove(data.size()-1);
+		downheapify(0);
+		return val;
+	}	
+	public static void downheapify(int pi){
+		int mini = pi;
+		
+		int li = 2*pi+1;
+		if(li<data.size() && data.get(li)<data.get(mini)){
+			mini=li;
+		}
+
+		int ri = 2*pi+2;
+		if(ri<data.size() && data.get(ri)<data.get(mini)){
+			mini= ri;
+		}
+
+		if(mini !=pi){
+			swap(pi,mini);
+			downheapify(mini);
+		}		
+	}
+}
